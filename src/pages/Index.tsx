@@ -1,51 +1,97 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe } from "lucide-react";
-
-// Mock data based on your API structure
-const mockData = {
-  success: true,
-  data: {
-    summary: {
-      total_requests: "25",
-      avg_response_time: "312.60",
-      server_errors: "9",
-      client_errors: "3"
-    },
-    endpoints: [
-      {
-        endpoint: "/api/dashboard",
-        total: "14"
-      },
-      {
-        endpoint: "/api/test_details",
-        total: "8"
-      },
-      {
-        endpoint: "/api/test_details/12",
-        total: "2"
-      },
-      {
-        endpoint: "/api/login",
-        total: "1"
-      }
-    ],
-    daily: [
-      {
-        day: "2025-06-24T23:00:00.000Z",
-        total: "25"
-      }
-    ]
-  }
-};
+import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, Key } from "lucide-react";
+import { useStatsData } from "@/hooks/useStatsData";
+import { useToast } from "@/hooks/use-toast";
 
 const COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
 const Index = () => {
-  const [data, setData] = useState(mockData.data);
+  const [apiKey, setApiKey] = useState("");
+  const [submittedApiKey, setSubmittedApiKey] = useState("");
+  const { toast } = useToast();
+
+  const { data: statsData, isLoading, error, refetch } = useStatsData(submittedApiKey);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!apiKey.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter your API key",
+        variant: "destructive",
+      });
+      return;
+    }
+    setSubmittedApiKey(apiKey);
+  };
+
+  const handleRefresh = () => {
+    refetch();
+    toast({
+      title: "Refreshed",
+      description: "Dashboard data has been refreshed",
+    });
+  };
+
+  // Show API key input if no key is submitted or if there's an error
+  if (!submittedApiKey || error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="flex items-center justify-center gap-2">
+              <Key className="h-5 w-5" />
+              Reqlytics Dashboard
+            </CardTitle>
+            <CardDescription>
+              Enter your API key to view analytics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <Input
+                  type="password"
+                  placeholder="Enter your x-api-key"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                />
+              </div>
+              {error && (
+                <div className="text-sm text-red-600">
+                  Failed to fetch data. Please check your API key.
+                </div>
+              )}
+              <Button type="submit" className="w-full">
+                Connect Dashboard
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading dashboard data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const data = statsData?.data;
+  if (!data) return null;
 
   // Transform endpoints data for charts
   const endpointChartData = data.endpoints.map(endpoint => ({
@@ -69,9 +115,20 @@ const Index = () => {
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-            Reqlytics Dashboard
-          </h1>
+          <div className="flex items-center justify-center gap-4">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              Reqlytics Dashboard
+            </h1>
+            <Button 
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              className="ml-4"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
           <p className="text-lg text-muted-foreground">
             Real-time API analytics and monitoring
           </p>
