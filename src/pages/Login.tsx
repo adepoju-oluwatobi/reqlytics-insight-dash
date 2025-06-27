@@ -37,7 +37,7 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      const response = await fetch('https://reqlytics-api.onrender.com/api/v1/auth/login', {
+      const response = await fetch('http://localhost:5000/api/v1/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

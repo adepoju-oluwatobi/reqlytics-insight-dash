@@ -1,5 +1,7 @@
 
 import { useQuery } from '@tanstack/react-query';
+const url = 'http://localhost:5000'
+// const url = 'https://reqlytics-api.onrender.com'
 
 interface StatsResponse {
   success: boolean;
@@ -22,7 +24,7 @@ interface StatsResponse {
 }
 
 const fetchStats = async (apiKey: string): Promise<StatsResponse> => {
-  const response = await fetch('https://reqlytics-api.onrender.com/api/v1/stats', {
+  const response = await fetch(`${url}/api/v1/stats`, {
     headers: {
       'x-api-key': apiKey,
     },
