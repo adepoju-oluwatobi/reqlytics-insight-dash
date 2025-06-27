@@ -24,36 +24,20 @@ const Index = () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
       
+      console.log('Checking auth - Token exists:', !!storedToken);
+      console.log('Checking auth - API Key exists:', !!storedApiKey);
+      
       if (!storedToken || !storedApiKey) {
-        // No token or API key, redirect to login
+        console.log('No token or API key found, redirecting to login');
         navigate('/login');
         return;
       }
 
-      // Token exists, verify if it's still valid by making a test API call
-      try {
-        const response = await fetch('https://reqlytics-api.onrender.com/api/v1/stats', {
-          headers: {
-            'x-api-key': storedApiKey,
-          },
-        });
-
-        if (response.ok) {
-          // Token is valid, set authenticated state
-          setIsAuthenticated(true);
-          setApiKey(storedApiKey);
-        } else {
-          // Token is invalid, clear storage and redirect to login
-          localStorage.removeItem('reqlytics_token');
-          localStorage.removeItem('reqlytics_api_key');
-          navigate('/login');
-        }
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        // Network error, but keep user logged in if they have tokens
-        setIsAuthenticated(true);
-        setApiKey(storedApiKey);
-      }
+      // For now, trust the stored tokens and proceed to dashboard
+      // The useStatsData hook will handle API validation
+      console.log('Tokens found, setting authenticated state');
+      setIsAuthenticated(true);
+      setApiKey(storedApiKey);
     };
 
     checkAuth();
@@ -105,21 +89,22 @@ const Index = () => {
 
   // Show error state
   if (error) {
+    console.error('Stats data error:', error);
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle className="text-red-600">Error Loading Data</CardTitle>
             <CardDescription>
-              Failed to fetch dashboard data. Your session may have expired.
+              Failed to fetch dashboard data. Please check your connection or try refreshing.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <Button onClick={handleLogout} className="w-full">
-              Sign In Again
-            </Button>
             <Button onClick={handleRefresh} variant="outline" className="w-full">
               Try Again
+            </Button>
+            <Button onClick={handleLogout} className="w-full">
+              Sign In Again
             </Button>
           </CardContent>
         </Card>
