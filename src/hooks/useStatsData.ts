@@ -22,7 +22,7 @@ interface StatsResponse {
 }
 
 const fetchStats = async (apiKey: string): Promise<StatsResponse> => {
-  const response = await fetch('/stats', {
+  const response = await fetch('https://reqlytics-api.onrender.com/api/v1/stats', {
     headers: {
       'x-api-key': apiKey,
     },
