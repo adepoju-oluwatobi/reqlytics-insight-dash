@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -171,7 +171,7 @@ const Index = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground">
-            Real-time API analytics and monitoring
+            Real-time API analytics and monitoring <span className="text-blue-500 underline"><Link to="/guide">Documentation</Link></span>
           </p>
         </div>
 
@@ -354,7 +354,7 @@ const Index = () => {
       </div>
       <ShowApiKeyDialog open={showDialog} onClose={() => setShowDialog(false)} />
     </div>
-    
+
   );
 };
 
