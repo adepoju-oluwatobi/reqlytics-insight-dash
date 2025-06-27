@@ -99,24 +99,6 @@ app.listen(3000, () => console.log("Server running on port 3000"));`}
                             </ul>
                         </div>
 
-                        {/* Dashboard */}
-                        <div>
-                            <h2 className="text-lg font-semibold mb-2">📈 Dashboard</h2>
-                            <p className="text-sm">
-                                After setup, visit the Reqlytics dashboard at:
-                                <a
-                                    href="https://reqlytics.vercel.app"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="text-blue-600 hover:underline ml-1"
-                                >
-                                    https://reqlytics.vercel.app
-                                </a>{" "}
-                                to view request metrics, response times, success/error rates,
-                                and more in real-time.
-                            </p>
-                        </div>
-
                         {/* Example Response */}
                         <div>
                             <h2 className="text-lg font-semibold mb-2">
