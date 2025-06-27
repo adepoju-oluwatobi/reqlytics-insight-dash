@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,19 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Mail, Lock, LogIn } from "lucide-react";
 
+interface LoginResponse {
+  success: boolean;
+  token: string;
+  api_key: string;
+}
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,17 +36,51 @@ const Login = () => {
 
     setIsLoading(true);
     
-    // TODO: Connect to your backend here
-    console.log("Login attempt:", { email, password });
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Success",
-        description: "Login functionality ready for backend integration",
+    try {
+      const response = await fetch('https://reqlytics-api.onrender.com/api/v1/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
       });
-    }, 1000);
+
+      const data: LoginResponse = await response.json();
+
+      if (response.ok && data.success) {
+        // Store the API key in localStorage for the dashboard
+        localStorage.setItem('reqlytics_api_key', data.api_key);
+        localStorage.setItem('reqlytics_token', data.token);
+        
+        toast({
+          title: "Success",
+          description: "Login successful! Redirecting to dashboard...",
+        });
+
+        // Navigate to dashboard with a small delay to show the success message
+        setTimeout(() => {
+          navigate('/');
+        }, 1000);
+      } else {
+        toast({
+          title: "Login Failed",
+          description: "Invalid email or password. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to connect to the server. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleLogin = () => {

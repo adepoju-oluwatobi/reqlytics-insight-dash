@@ -1,12 +1,12 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, Key } from "lucide-react";
+import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, Key, LogOut } from "lucide-react";
 import { useStatsData } from "@/hooks/useStatsData";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +18,15 @@ const Index = () => {
   const { toast } = useToast();
 
   const { data: statsData, isLoading, error, refetch } = useStatsData(submittedApiKey);
+
+  // Check for stored API key on component mount
+  useEffect(() => {
+    const storedApiKey = localStorage.getItem('reqlytics_api_key');
+    if (storedApiKey) {
+      setSubmittedApiKey(storedApiKey);
+      setApiKey(storedApiKey);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +46,17 @@ const Index = () => {
     toast({
       title: "Refreshed",
       description: "Dashboard data has been refreshed",
+    });
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('reqlytics_api_key');
+    localStorage.removeItem('reqlytics_token');
+    setSubmittedApiKey("");
+    setApiKey("");
+    toast({
+      title: "Logged out",
+      description: "You have been logged out successfully",
     });
   };
 
@@ -134,15 +154,24 @@ const Index = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Reqlytics Dashboard
             </h1>
-            <Button 
-              onClick={handleRefresh}
-              variant="outline"
-              size="sm"
-              className="ml-4"
-            >
-              <TrendingUp className="h-4 w-4 mr-2" />
-              Refresh
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={handleRefresh}
+                variant="outline"
+                size="sm"
+              >
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Button 
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
           <p className="text-lg text-muted-foreground">
             Real-time API analytics and monitoring
