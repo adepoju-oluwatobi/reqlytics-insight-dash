@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Loader2, CheckCircle2, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { BASE_URL } from "@/base_url";
 
 const EmailVerification = () => {
   const [searchParams] = useSearchParams();
@@ -14,7 +15,7 @@ const EmailVerification = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/v1/auth/verify?token=${token}`);
+        const response = await fetch(`${BASE_URL}/api/v1/auth/verify?token=${token}`);
         const data = await response.json();
 
         if (response.ok && data.success) {
