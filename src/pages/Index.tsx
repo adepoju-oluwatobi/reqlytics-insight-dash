@@ -1,48 +1,66 @@
-
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, Key, LogOut } from "lucide-react";
+import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, LogOut } from "lucide-react";
 import { useStatsData } from "@/hooks/useStatsData";
 import { useToast } from "@/hooks/use-toast";
 
 const COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
 const Index = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [apiKey, setApiKey] = useState("");
-  const [submittedApiKey, setSubmittedApiKey] = useState("");
+  const navigate = useNavigate();
   const { toast } = useToast();
 
-  const { data: statsData, isLoading, error, refetch } = useStatsData(submittedApiKey);
+  const { data: statsData, isLoading, error } = useStatsData(apiKey);
 
-  // Check for stored API key on component mount
+  // Check authentication status on component mount
   useEffect(() => {
-    const storedApiKey = localStorage.getItem('reqlytics_api_key');
-    if (storedApiKey) {
-      setSubmittedApiKey(storedApiKey);
-      setApiKey(storedApiKey);
-    }
-  }, []);
+    const checkAuth = async () => {
+      const storedToken = localStorage.getItem('reqlytics_token');
+      const storedApiKey = localStorage.getItem('reqlytics_api_key');
+      
+      if (!storedToken || !storedApiKey) {
+        // No token or API key, redirect to login
+        navigate('/login');
+        return;
+      }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!apiKey.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter your API key",
-        variant: "destructive",
-      });
-      return;
-    }
-    setSubmittedApiKey(apiKey);
-  };
+      // Token exists, verify if it's still valid by making a test API call
+      try {
+        const response = await fetch('https://reqlytics-api.onrender.com/api/v1/stats', {
+          headers: {
+            'x-api-key': storedApiKey,
+          },
+        });
+
+        if (response.ok) {
+          // Token is valid, set authenticated state
+          setIsAuthenticated(true);
+          setApiKey(storedApiKey);
+        } else {
+          // Token is invalid, clear storage and redirect to login
+          localStorage.removeItem('reqlytics_token');
+          localStorage.removeItem('reqlytics_api_key');
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        // Network error, but keep user logged in if they have tokens
+        setIsAuthenticated(true);
+        setApiKey(storedApiKey);
+      }
+    };
+
+    checkAuth();
+  }, [navigate]);
 
   const handleRefresh = () => {
-    refetch();
+    window.location.reload();
     toast({
       title: "Refreshed",
       description: "Dashboard data has been refreshed",
@@ -52,68 +70,28 @@ const Index = () => {
   const handleLogout = () => {
     localStorage.removeItem('reqlytics_api_key');
     localStorage.removeItem('reqlytics_token');
-    setSubmittedApiKey("");
+    setIsAuthenticated(false);
     setApiKey("");
+    navigate('/login');
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
     });
   };
 
-  // Show API key input if no key is submitted or if there's an error
-  if (!submittedApiKey || error) {
+  // Show loading while checking authentication
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center gap-2">
-              <Key className="h-5 w-5" />
-              Reqlytics Dashboard
-            </CardTitle>
-            <CardDescription>
-              Enter your API key to view analytics
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Input
-                  type="password"
-                  placeholder="Enter your x-api-key"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </div>
-              {error && (
-                <div className="text-sm text-red-600">
-                  Failed to fetch data. Please check your API key.
-                </div>
-              )}
-              <Button type="submit" className="w-full">
-                Connect Dashboard
-              </Button>
-            </form>
-            
-            <div className="mt-6 pt-6 border-t">
-              <div className="text-center text-sm text-muted-foreground mb-3">
-                Need an account?
-              </div>
-              <div className="flex gap-2">
-                <Button variant="outline" className="flex-1" asChild>
-                  <Link to="/login">Sign In</Link>
-                </Button>
-                <Button variant="outline" className="flex-1" asChild>
-                  <Link to="/signup">Sign Up</Link>
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Checking authentication...</p>
+        </div>
       </div>
     );
   }
 
-  // Show loading state
+  // Show loading state for data
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
@@ -121,6 +99,30 @@ const Index = () => {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-muted-foreground">Loading dashboard data...</p>
         </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-red-600">Error Loading Data</CardTitle>
+            <CardDescription>
+              Failed to fetch dashboard data. Your session may have expired.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button onClick={handleLogout} className="w-full">
+              Sign In Again
+            </Button>
+            <Button onClick={handleRefresh} variant="outline" className="w-full">
+              Try Again
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
