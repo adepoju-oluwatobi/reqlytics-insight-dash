@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
-import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, LogOut } from "lucide-react";
+import { Activity, Clock, AlertTriangle, CheckCircle, TrendingUp, Globe, LogOut, Key } from "lucide-react";
 import { useStatsData } from "@/hooks/useStatsData";
 import { useToast } from "@/hooks/use-toast";
+import ShowApiKeyDialog from "@/components/ShowApiKeyDialog";
 
 const COLORS = ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
 
@@ -15,6 +16,7 @@ const Index = () => {
   const [apiKey, setApiKey] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [showDialog, setShowDialog] = useState(false);
 
   const { data: statsData, isLoading, error } = useStatsData(apiKey);
 
@@ -23,10 +25,10 @@ const Index = () => {
     const checkAuth = async () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
-      
+
       console.log('Checking auth - Token exists:', !!storedToken);
       console.log('Checking auth - API Key exists:', !!storedApiKey);
-      
+
       if (!storedToken || !storedApiKey) {
         console.log('No token or API key found, redirecting to login');
         navigate('/login');
@@ -142,7 +144,15 @@ const Index = () => {
               Reqlytics Dashboard
             </h1>
             <div className="flex gap-2">
-              <Button 
+              <Button
+                onClick={() => setShowDialog(true)}
+                variant="outline"
+                size="sm"
+              >
+                <Key className="h-4 w-4 mr-2" />
+                Show API KEY
+              </Button>
+              <Button
                 onClick={handleRefresh}
                 variant="outline"
                 size="sm"
@@ -150,7 +160,7 @@ const Index = () => {
                 <TrendingUp className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
-              <Button 
+              <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
@@ -246,15 +256,15 @@ const Index = () => {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={endpointChartData}>
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                  <XAxis 
-                    dataKey="name" 
+                  <XAxis
+                    dataKey="name"
                     tick={{ fontSize: 12 }}
                     angle={-45}
                     textAnchor="end"
                     height={60}
                   />
                   <YAxis />
-                  <Tooltip 
+                  <Tooltip
                     labelFormatter={(label, payload) => {
                       const item = payload?.[0]?.payload;
                       return item?.fullEndpoint || label;
@@ -324,10 +334,10 @@ const Index = () => {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip />
-                <Line 
-                  type="monotone" 
-                  dataKey="requests" 
-                  stroke="#3b82f6" 
+                <Line
+                  type="monotone"
+                  dataKey="requests"
+                  stroke="#3b82f6"
                   strokeWidth={3}
                   dot={{ fill: '#3b82f6', strokeWidth: 2, r: 6 }}
                   activeDot={{ r: 8, stroke: '#3b82f6', strokeWidth: 2 }}
@@ -342,7 +352,9 @@ const Index = () => {
           <p>Reqlytics Dashboard - Real-time API Analytics</p>
         </div>
       </div>
+      <ShowApiKeyDialog open={showDialog} onClose={() => setShowDialog(false)} />
     </div>
+    
   );
 };
 
