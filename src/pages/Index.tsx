@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -72,6 +73,20 @@ const Index = () => {
                 Connect Dashboard
               </Button>
             </form>
+            
+            <div className="mt-6 pt-6 border-t">
+              <div className="text-center text-sm text-muted-foreground mb-3">
+                Need an account?
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" className="flex-1" asChild>
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button variant="outline" className="flex-1" asChild>
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
