@@ -56,7 +56,7 @@ const EndpointUsageTable: React.FC<EndpointUsageTableProps> = ({ data }) => {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: 10,
+        pageSize: 5,
       },
     },
   });
