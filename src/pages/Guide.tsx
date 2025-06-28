@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/dashboard/AppSidebar";
@@ -14,9 +14,11 @@ import CodeBlock from "@/components/ui/code-block";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import ShowApiKeyDialog from "@/components/ShowApiKeyDialog";
 
 const ReqlyticsIntegrationInfo = () => {
     const navigate = useNavigate();
+    const [showDialog, setShowDialog] = useState<boolean>(false);
     
     const handleRefresh = () => {
         window.location.reload();
@@ -29,7 +31,7 @@ const ReqlyticsIntegrationInfo = () => {
     };
 
     const handleShowApiKey = () => {
-        // This could be implemented if needed
+        setShowDialog(true);
     };
 
     return (
@@ -164,6 +166,7 @@ app.listen(3000, () => console.log("Server running on port 3000"));`}
                     </div>
                 </SidebarInset>
             </div>
+            <ShowApiKeyDialog open={showDialog} onClose={() => setShowDialog(false)} />
         </SidebarProvider>
     );
 };
