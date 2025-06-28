@@ -1,7 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
 import { useToast } from "@/hooks/use-toast";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/dashboard/AppSidebar";
 import Header from "@/components/dashboard/Header";
 import SummaryCards from "@/components/dashboard/SummaryCard";
 import EndpointUsageTable from "@/components/dashboard/EndpointUsageTable";
@@ -97,30 +100,45 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
-        <Header
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar
           onShowApiKey={() => setShowDialog(true)}
           onRefresh={handleRefresh}
           onLogout={handleLogout}
         />
-        <SummaryCards
-          totalRequests={data.summary.total_requests}
-          avgResponseTime={data.summary.avg_response_time}
-          serverErrors={data.summary.server_errors}
-          successfulRequests={successfulRequests}
-          errorRate={errorRate}
-          successRate={((successfulRequests / totalRequests) * 100).toFixed(1)}
-        />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <EndpointUsageTable data={endpointTableData} />
-          <RequestStatusChart data={requestStatusData} />
-        </div>
-        <DailyRequestTrend data={dailyChartData} />
-        <Footer />
+        <SidebarInset>
+          <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex-1 text-center">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                Reqlytics Dashboard
+              </h1>
+            </div>
+          </header>
+          <div className="flex-1 bg-gradient-to-br from-slate-50 to-blue-50 p-6">
+            <div className="max-w-7xl mx-auto space-y-8">
+              <Header />
+              <SummaryCards
+                totalRequests={data.summary.total_requests}
+                avgResponseTime={data.summary.avg_response_time}
+                serverErrors={data.summary.server_errors}
+                successfulRequests={successfulRequests}
+                errorRate={errorRate}
+                successRate={((successfulRequests / totalRequests) * 100).toFixed(1)}
+              />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <EndpointUsageTable data={endpointTableData} />
+                <RequestStatusChart data={requestStatusData} />
+              </div>
+              <DailyRequestTrend data={dailyChartData} />
+              <Footer />
+            </div>
+          </div>
+        </SidebarInset>
       </div>
       <ShowApiKeyDialog open={showDialog} onClose={() => setShowDialog(false)} />
-    </div>
+    </SidebarProvider>
   );
 };
 
