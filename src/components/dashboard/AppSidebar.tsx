@@ -37,8 +37,10 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton isActive>
-                  <Home className="h-4 w-4" />
-                  <span>Dashboard</span>
+                  <Link to='/'>
+                    <Home className="h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
