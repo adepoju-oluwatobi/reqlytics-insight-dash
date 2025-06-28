@@ -1,5 +1,6 @@
 
-import { BarChart3, Home, Settings, RefreshCw, Key, LogOut } from "lucide-react";
+import { BarChart3, Home, Settings, RefreshCw, Key, LogOut, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -38,6 +39,22 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
                 <SidebarMenuButton isActive>
                   <Home className="h-4 w-4" />
                   <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/guide">
+                    <BookOpen className="h-4 w-4" />
+                    <span>Documentation</span>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

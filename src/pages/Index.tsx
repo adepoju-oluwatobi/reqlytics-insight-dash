@@ -110,6 +110,11 @@ const Index = () => {
         <SidebarInset>
           <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
             <SidebarTrigger className="-ml-1" />
+            <div className="flex-1 text-center">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                Reqlytics Dashboard
+              </h1>
+            </div>
           </header>
           <div className="flex-1 bg-gradient-to-br from-slate-50 to-blue-50 p-6">
             <div className="max-w-7xl mx-auto space-y-8">
