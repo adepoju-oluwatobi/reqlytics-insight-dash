@@ -65,7 +65,7 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t">
+      <SidebarFooter className="border-t pb-6">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton onClick={onLogout} className="text-red-600 hover:text-red-700 hover:bg-red-50">

@@ -108,18 +108,12 @@ const Index = () => {
           onLogout={handleLogout}
         />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+          <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
             <SidebarTrigger className="-ml-1" />
-            <div className="ml-auto">
-              <Header
-                onShowApiKey={() => setShowDialog(true)}
-                onRefresh={handleRefresh}
-                onLogout={handleLogout}
-              />
-            </div>
           </header>
           <div className="flex-1 bg-gradient-to-br from-slate-50 to-blue-50 p-6">
             <div className="max-w-7xl mx-auto space-y-8">
+              <Header />
               <SummaryCards
                 totalRequests={data.summary.total_requests}
                 avgResponseTime={data.summary.avg_response_time}
