@@ -60,7 +60,8 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, currentPlan, isLoading, onPla
           className="w-full" 
           variant={isCurrentPlan ? "outline" : plan.popular ? "default" : "outline"}
           onClick={() => onPlanChange(plan.id)}
-          disabled={isCurrentPlan || isLoading}
+          // disabled={isCurrentPlan || isLoading}
+          disabled
         >
           {isCurrentPlan ? 'Current Plan' : `Upgrade to ${plan.name}`}
         </Button>

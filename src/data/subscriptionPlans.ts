@@ -1,5 +1,4 @@
-
-import { Crown, Zap, Building2 } from "lucide-react";
+import { Sparkles, Star, Crown } from "lucide-react";
 
 export const subscriptionPlans = [
   {
@@ -7,45 +6,27 @@ export const subscriptionPlans = [
     name: 'Free',
     price: '$0',
     period: '/month',
-    icon: Zap,
-    color: 'text-gray-600',
-    features: [
-      '1000 API requests per day',
-      'Basic analytics',
-      'Community support',
-      'Standard response time'
-    ]
+    icon: Sparkles,
+    color: 'text-gray-500',
+    features: ['Basic API access', 'Limited support', '1000 API requests/month'],
   },
   {
     id: 'premium',
     name: 'Premium',
-    price: '$18',
+    price: '$10',
     period: '/month',
-    icon: Crown,
-    color: 'text-blue-600',
+    icon: Star,
+    color: 'text-yellow-500',
     popular: true,
-    features: [
-      '5,000 API requests per day',
-      'Advanced analytics',
-      'Priority support',
-      'Real-time monitoring',
-      'Custom alerts'
-    ]
+    features: ['Advanced API access', 'Priority support', 'Analytics dashboard', '5000 API requests/day'],
   },
   {
     id: 'enterprise',
     name: 'Enterprise',
     price: '$50',
     period: '/month',
-    icon: Building2,
-    color: 'text-purple-600',
-    features: [
-      '10,000 API requests per day',
-      'Enterprise analytics',
-      '24/7 dedicated support',
-      'Custom integrations',
-      'Advanced security',
-      'SLA guarantees'
-    ]
-  }
+    icon: Crown,
+    color: 'text-purple-500',
+    features: ['Full API access', 'Dedicated support', 'Custom integrations', '10000 API requests/day'],
+  },
 ];
