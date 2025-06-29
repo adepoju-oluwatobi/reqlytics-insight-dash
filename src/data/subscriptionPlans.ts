@@ -25,7 +25,7 @@ export const subscriptionPlans = [
     color: 'text-blue-600',
     popular: true,
     features: [
-      '3,000 API requests per day',
+      '5,000 API requests per day',
       'Advanced analytics',
       'Priority support',
       'Real-time monitoring',
