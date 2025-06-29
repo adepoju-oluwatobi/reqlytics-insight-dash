@@ -19,6 +19,7 @@ import { StatsData, EndpointTableData, DailyChartData, RequestStatusData } from 
 const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>("");
+  const [currentPlan, setCurrentPlan] = useState<string>("free");
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -28,6 +29,7 @@ const Index = () => {
     const checkAuth = async () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
+      const storedPlan = localStorage.getItem('reqlytics_user_plan');
 
       if (!storedToken || !storedApiKey) {
         navigate('/login');
@@ -36,6 +38,7 @@ const Index = () => {
 
       setIsAuthenticated(true);
       setApiKey(storedApiKey);
+      setCurrentPlan(storedPlan || 'free');
     };
 
     checkAuth();
@@ -118,7 +121,7 @@ const Index = () => {
           </header>
           <div className="flex-1 bg-gradient-to-br from-slate-50 to-blue-50 p-6">
             <div className="max-w-7xl mx-auto space-y-8">
-              <Header />
+              <Header currentPlan={currentPlan} />
               <SummaryCards
                 totalRequests={data.summary.total_requests}
                 avgResponseTime={data.summary.avg_response_time}

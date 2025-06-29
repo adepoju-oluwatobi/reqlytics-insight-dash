@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -71,6 +70,7 @@ const Subscription = () => {
     const checkAuth = async () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
+      const storedPlan = localStorage.getItem('reqlytics_user_plan');
 
       if (!storedToken || !storedApiKey) {
         navigate('/login');
@@ -78,7 +78,7 @@ const Subscription = () => {
       }
 
       setIsAuthenticated(true);
-      // TODO: Fetch current user plan from API
+      setCurrentPlan(storedPlan || 'free');
     };
 
     checkAuth();
@@ -89,29 +89,24 @@ const Subscription = () => {
 
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('reqlytics_token');
-      const response = await fetch('/api/user/change-plan', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ plan: newPlan })
+      // For now, simulate successful plan change since backend endpoint doesn't exist
+      // TODO: Replace with actual API call when backend is ready
+      console.log(`Simulating plan change to: ${newPlan}`);
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Update local storage and state
+      localStorage.setItem('reqlytics_user_plan', newPlan);
+      setCurrentPlan(newPlan);
+      
+      toast({
+        title: "Plan Updated",
+        description: `Successfully upgraded to ${plans.find(p => p.id === newPlan)?.name} plan`,
       });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setCurrentPlan(newPlan);
-        toast({
-          title: "Plan Updated",
-          description: `Successfully upgraded to ${plans.find(p => p.id === newPlan)?.name} plan`,
-        });
-        // Redirect to dashboard after successful plan change
-        setTimeout(() => navigate('/'), 2000);
-      } else {
-        throw new Error(data.error || 'Failed to update plan');
-      }
+      
+      // Redirect to dashboard after successful plan change
+      setTimeout(() => navigate('/'), 2000);
     } catch (error) {
       console.error('Plan change error:', error);
       toast({
