@@ -1,5 +1,5 @@
 
-import { BarChart3, Home, Settings, RefreshCw, Key, LogOut, BookOpen } from "lucide-react";
+import { BarChart3, Home, Settings, RefreshCw, Key, LogOut, BookOpen, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -40,6 +40,22 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
                   <Link className="flex items-center gap-2" to='/'>
                     <Home className="h-4 w-4" />
                     <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Account</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/subscription">
+                    <Crown className="h-4 w-4" />
+                    <span>Upgrade Plan</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
