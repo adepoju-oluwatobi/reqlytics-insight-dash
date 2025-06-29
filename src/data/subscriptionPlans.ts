@@ -10,7 +10,7 @@ export const subscriptionPlans = [
     icon: Zap,
     color: 'text-gray-600',
     features: [
-      '100 API requests per month',
+      '1000 API requests per day',
       'Basic analytics',
       'Community support',
       'Standard response time'
@@ -19,13 +19,13 @@ export const subscriptionPlans = [
   {
     id: 'premium',
     name: 'Premium',
-    price: '$29',
+    price: '$18',
     period: '/month',
     icon: Crown,
     color: 'text-blue-600',
     popular: true,
     features: [
-      '1,000 API requests per month',
+      '3,000 API requests per day',
       'Advanced analytics',
       'Priority support',
       'Real-time monitoring',
@@ -35,12 +35,12 @@ export const subscriptionPlans = [
   {
     id: 'enterprise',
     name: 'Enterprise',
-    price: '$99',
+    price: '$50',
     period: '/month',
     icon: Building2,
     color: 'text-purple-600',
     features: [
-      '5,000 API requests per month',
+      '10,000 API requests per day',
       'Enterprise analytics',
       '24/7 dedicated support',
       'Custom integrations',
