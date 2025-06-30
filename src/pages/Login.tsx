@@ -13,6 +13,7 @@ interface LoginResponse {
   success: boolean;
   token: string;
   api_key: string;
+  email: string;
 }
 
 const Login = () => {
@@ -55,6 +56,8 @@ const Login = () => {
         // Store the API key in localStorage for the dashboard
         localStorage.setItem('reqlytics_api_key', data.api_key);
         localStorage.setItem('reqlytics_token', data.token);
+        localStorage.setItem('user_email', data.email)
+        console.log(data.email)
 
         toast({
           title: "Success",

@@ -11,7 +11,7 @@ import { subscriptionPlans } from "@/data/subscriptionPlans";
 const Subscription = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string>('user@example.com'); // This should come from your auth system
+  const [userEmail, setUserEmail] = useState<string>(localStorage.getItem('user_email')); // This should come from your auth system
   
   const {
     isAuthenticated,

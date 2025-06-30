@@ -16,9 +16,9 @@ const PaystackCheckout: React.FC<PaystackCheckoutProps> = ({ plan, email, handle
   const getAmount = (planType: string) => {
     switch (planType) {
       case 'premium':
-        return 1000 * 100; // $10 = 1000 cents or ₦1000 = 100000 kobo
+        return 15000 * 100; // $10 = 1000 cents or ₦1000 = 100000 kobo
       case 'enterprise':
-        return 5000 * 100; // $50 = 5000 cents or ₦5000 = 500000 kobo
+        return 75000 * 100; // $50 = 5000 cents or ₦5000 = 500000 kobo
       default:
         return 0;
     }

@@ -13,7 +13,7 @@ export const subscriptionPlans = [
   {
     id: 'premium',
     name: 'Premium',
-    price: '$10',
+    price: '₦15,000',
     period: '/month',
     icon: Star,
     color: 'text-yellow-500',
@@ -23,7 +23,7 @@ export const subscriptionPlans = [
   {
     id: 'enterprise',
     name: 'Enterprise',
-    price: '$50',
+    price: '₦75,000',
     period: '/month',
     icon: Crown,
     color: 'text-purple-500',
