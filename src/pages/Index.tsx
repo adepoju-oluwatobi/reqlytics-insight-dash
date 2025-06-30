@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
@@ -120,21 +121,28 @@ const Index = () => {
     });
   };
 
+  // Show loading state while initializing or not authenticated
   if (!isAuthenticated || isInitializing) {
     return <LoadingState message="Checking authentication..." />;
   }
 
+  // Show loading state while fetching stats
   if (isLoading) {
     return <LoadingState message="Loading dashboard data..." />;
   }
 
+  // Show error state if there's an error
   if (error) {
     console.error('Stats data error:', error);
     return <ErrorState onRefresh={handleRefresh} onLogout={handleLogout} />;
   }
 
+  // Check if we have data before proceeding
   const data = statsData?.data as StatsData['data'];
-  if (!data) return null;
+  if (!data) {
+    console.log('No stats data available, showing loading state');
+    return <LoadingState message="Preparing dashboard..." />;
+  }
 
   const totalRequests = parseInt(data.summary.total_requests);
   const successfulRequests = totalRequests - parseInt(data.summary.server_errors) - parseInt(data.summary.client_errors);
