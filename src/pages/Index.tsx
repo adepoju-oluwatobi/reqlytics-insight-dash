@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
@@ -18,6 +17,8 @@ import { StatsData, EndpointTableData, DailyChartData, RequestStatusData } from 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setAuth, logout as logoutAction } from "@/store/slices/authSlice";
 import { useState } from "react";
+import { setCurrentPlan } from "@/store/slices/subscriptionSlice";
+import { BASE_URL } from "@/base_url";
 
 const Index = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -27,6 +28,62 @@ const Index = () => {
   const { isAuthenticated, apiKey } = useAppSelector((state) => state.auth);
   const { currentPlan } = useAppSelector((state) => state.subscription);
   const { data: statsData, isLoading, error } = useStatsData(apiKey);
+
+  const fetchPlan = async () => {
+    const storedToken = localStorage.getItem('reqlytics_token');
+    if (!storedToken) {
+      toast({
+        title: "Error",
+        description: "No authentication token found. Please log in again.",
+        variant: "destructive",
+      });
+      navigate('/login');
+      return 'free';
+    }
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/v1/subscribe/plan`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${storedToken}`,
+        },
+      });
+
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Non-JSON response:', text);
+        throw new Error(`Server returned non-JSON response (HTTP ${response.status})`);
+      }
+
+      const planData = await response.json();
+      if (!response.ok) {
+        throw new Error(planData.error || `Failed to fetch plan (HTTP ${response.status})`);
+      }
+
+      console.log('Fetched plan:', planData);
+      return planData.data.plan || 'free';
+    } catch (error) {
+      console.error('Error fetching plan:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to fetch subscription plan",
+        variant: "destructive",
+      });
+      return 'free';
+    }
+  };
+
+  useEffect(() => {
+    const initializePlan = async () => {
+      if (!currentPlan) {
+        const plan = await fetchPlan();
+        dispatch(setCurrentPlan(plan));
+      }
+    };
+    initializePlan();
+  }, [currentPlan, dispatch, navigate, toast]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -41,7 +98,7 @@ const Index = () => {
       dispatch(setAuth({
         isAuthenticated: true,
         apiKey: storedApiKey,
-        token: storedToken
+        token: storedToken,
       }));
     };
 
