@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
@@ -16,7 +17,6 @@ import ShowApiKeyDialog from "@/components/ShowApiKeyDialog";
 import { StatsData, EndpointTableData, DailyChartData, RequestStatusData } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setAuth, logout as logoutAction } from "@/store/slices/authSlice";
-import { setCurrentPlan } from "@/store/slices/subscriptionSlice";
 import { useState } from "react";
 
 const Index = () => {
@@ -32,7 +32,6 @@ const Index = () => {
     const checkAuth = async () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
-      const storedPlan = localStorage.getItem('reqlytics_user_plan');
 
       if (!storedToken || !storedApiKey) {
         navigate('/login');
@@ -44,7 +43,6 @@ const Index = () => {
         apiKey: storedApiKey,
         token: storedToken
       }));
-      dispatch(setCurrentPlan(storedPlan || 'free'));
     };
 
     checkAuth();
