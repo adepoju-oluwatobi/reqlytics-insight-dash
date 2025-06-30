@@ -23,6 +23,18 @@ interface PlanCardProps {
 const PlanCard: React.FC<PlanCardProps> = ({ plan, currentPlan, isLoading, onPlanChange }) => {
   const Icon = plan.icon;
   const isCurrentPlan = plan.id === currentPlan;
+  const isDowngrade = 
+    (currentPlan === 'enterprise' && (plan.id === 'premium' || plan.id === 'free')) ||
+    (currentPlan === 'premium' && plan.id === 'free');
+
+  const getButtonText = () => {
+    if (isCurrentPlan) return 'Current Plan';
+    if (isDowngrade) return `Downgrade to ${plan.name}`;
+    if (plan.id === 'free') return 'Downgrade to Free';
+    return `Upgrade to ${plan.name}`;
+  };
+
+  const isButtonDisabled = isCurrentPlan || isLoading;
 
   return (
     <Card 
@@ -60,10 +72,9 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, currentPlan, isLoading, onPla
           className="w-full" 
           variant={isCurrentPlan ? "outline" : plan.popular ? "default" : "outline"}
           onClick={() => onPlanChange(plan.id)}
-          // disabled={isCurrentPlan || isLoading}
-          disabled
+          disabled={isButtonDisabled}
         >
-          {isCurrentPlan ? 'Current Plan' : `Upgrade to ${plan.name}`}
+          {isLoading ? 'Processing...' : getButtonText()}
         </Button>
       </CardContent>
     </Card>

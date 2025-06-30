@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
 import { useToast } from "@/hooks/use-toast";
@@ -15,14 +14,18 @@ import ErrorState from "@/components/dashboard/ErrorState";
 import Footer from "@/components/dashboard/Footer";
 import ShowApiKeyDialog from "@/components/ShowApiKeyDialog";
 import { StatsData, EndpointTableData, DailyChartData, RequestStatusData } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setAuth, logout as logoutAction } from "@/store/slices/authSlice";
+import { setCurrentPlan } from "@/store/slices/subscriptionSlice";
+import { useState } from "react";
 
 const Index = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [apiKey, setApiKey] = useState<string>("");
-  const [currentPlan, setCurrentPlan] = useState<string>("free");
   const [showDialog, setShowDialog] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, apiKey } = useAppSelector((state) => state.auth);
+  const { currentPlan } = useAppSelector((state) => state.subscription);
   const { data: statsData, isLoading, error } = useStatsData(apiKey);
 
   useEffect(() => {
@@ -36,13 +39,16 @@ const Index = () => {
         return;
       }
 
-      setIsAuthenticated(true);
-      setApiKey(storedApiKey);
-      setCurrentPlan(storedPlan || 'free');
+      dispatch(setAuth({
+        isAuthenticated: true,
+        apiKey: storedApiKey,
+        token: storedToken
+      }));
+      dispatch(setCurrentPlan(storedPlan || 'free'));
     };
 
     checkAuth();
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   const handleRefresh = () => {
     window.location.reload();
@@ -55,8 +61,8 @@ const Index = () => {
   const handleLogout = () => {
     localStorage.removeItem('reqlytics_api_key');
     localStorage.removeItem('reqlytics_token');
-    setIsAuthenticated(false);
-    setApiKey("");
+    localStorage.removeItem('reqlytics_user_plan');
+    dispatch(logoutAction());
     navigate('/login');
     toast({
       title: "Logged out",

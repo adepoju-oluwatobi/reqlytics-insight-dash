@@ -1,14 +1,18 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { BASE_URL } from "@/base_url";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setAuth, logout as logoutAction } from "@/store/slices/authSlice";
+import { setCurrentPlan, setLoading } from "@/store/slices/subscriptionSlice";
 
 export const useSubscription = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [currentPlan, setCurrentPlan] = useState<string>('free');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { currentPlan, isLoading } = useAppSelector((state) => state.subscription);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -21,8 +25,12 @@ export const useSubscription = () => {
         return;
       }
 
-      setIsAuthenticated(true);
-      setCurrentPlan(storedPlan || 'free');
+      dispatch(setAuth({
+        isAuthenticated: true,
+        apiKey: storedApiKey,
+        token: storedToken
+      }));
+      dispatch(setCurrentPlan(storedPlan || 'free'));
 
       // Fetch current plan from backend
       try {
@@ -46,7 +54,7 @@ export const useSubscription = () => {
         if (!response.ok) {
           throw new Error(data.error || `Failed to fetch plan (HTTP ${response.status})`);
         }
-        setCurrentPlan(data.data.plan);
+        dispatch(setCurrentPlan(data.data.plan));
       } catch (error) {
         console.error('Fetch plan error:', error);
         toast({
@@ -58,12 +66,12 @@ export const useSubscription = () => {
     };
 
     checkAuth();
-  }, [navigate, toast]);
+  }, [navigate, toast, dispatch]);
 
-  const handlePlanChange = async (newPlan: string) => {
+  const handlePlanChange = async (newPlan: string, paymentResponse?: any) => {
     if (newPlan === currentPlan) return;
 
-    setIsLoading(true);
+    dispatch(setLoading(true));
     try {
       const token = localStorage.getItem('reqlytics_token');
       if (!token) {
@@ -76,7 +84,10 @@ export const useSubscription = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ plan: newPlan }),
+        body: JSON.stringify({ 
+          plan: newPlan,
+          paymentResponse: paymentResponse || null
+        }),
       });
 
       const contentType = response.headers.get('content-type');
@@ -93,7 +104,7 @@ export const useSubscription = () => {
       }
 
       localStorage.setItem('reqlytics_user_plan', newPlan);
-      setCurrentPlan(newPlan);
+      dispatch(setCurrentPlan(newPlan));
 
       toast({
         title: "Plan Updated",
@@ -109,7 +120,7 @@ export const useSubscription = () => {
         variant: "destructive",
       });
     } finally {
-      setIsLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -125,7 +136,7 @@ export const useSubscription = () => {
     localStorage.removeItem('reqlytics_api_key');
     localStorage.removeItem('reqlytics_token');
     localStorage.removeItem('reqlytics_user_plan');
-    setIsAuthenticated(false);
+    dispatch(logoutAction());
     navigate('/login');
     toast({
       title: "Logged out",

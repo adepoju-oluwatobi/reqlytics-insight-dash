@@ -4,11 +4,15 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/dashboard/AppSidebar";
 import ShowApiKeyDialog from "@/components/ShowApiKeyDialog";
 import PlanCard from "@/components/subscription/PlanCard";
+import PaymentGatewaySelector from "@/components/subscription/PaymentGatewaySelector";
 import { useSubscription } from "@/hooks/useSubscription";
 import { subscriptionPlans } from "@/data/subscriptionPlans";
 
 const Subscription = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string>('user@example.com'); // This should come from your auth system
+  
   const {
     isAuthenticated,
     currentPlan,
@@ -23,6 +27,25 @@ const Subscription = () => {
       <div className="text-center">Checking authentication...</div>
     </div>;
   }
+
+  const handlePlanSelection = (planId: string) => {
+    if (planId === 'free') {
+      // Free plan doesn't require payment
+      handlePlanChange(planId);
+    } else {
+      // Paid plans require payment gateway selection
+      setSelectedPlan(planId);
+    }
+  };
+
+  const handlePaymentComplete = async (plan: string, paymentResponse?: any) => {
+    await handlePlanChange(plan, paymentResponse);
+    setSelectedPlan(null);
+  };
+
+  const handlePaymentCancel = () => {
+    setSelectedPlan(null);
+  };
 
   return (
     <SidebarProvider>
@@ -43,24 +66,37 @@ const Subscription = () => {
           </header>
           <div className="flex-1 bg-gradient-to-br from-slate-50 to-blue-50 p-6">
             <div className="max-w-6xl mx-auto space-y-8">
-              <div className="text-center space-y-4">
-                <h2 className="text-3xl font-bold">Choose Your Plan</h2>
-                <p className="text-muted-foreground">
-                  Upgrade your plan to unlock more features and higher limits
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {subscriptionPlans.map((plan) => (
-                  <PlanCard
-                    key={plan.id}
-                    plan={plan}
-                    currentPlan={currentPlan}
-                    isLoading={isLoading}
-                    onPlanChange={handlePlanChange}
+              {selectedPlan ? (
+                <div className="max-w-md mx-auto">
+                  <PaymentGatewaySelector
+                    plan={selectedPlan}
+                    email={userEmail}
+                    onPlanChange={handlePaymentComplete}
+                    onCancel={handlePaymentCancel}
                   />
-                ))}
-              </div>
+                </div>
+              ) : (
+                <>
+                  <div className="text-center space-y-4">
+                    <h2 className="text-3xl font-bold">Choose Your Plan</h2>
+                    <p className="text-muted-foreground">
+                      Upgrade your plan to unlock more features and higher limits
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {subscriptionPlans.map((plan) => (
+                      <PlanCard
+                        key={plan.id}
+                        plan={plan}
+                        currentPlan={currentPlan}
+                        isLoading={isLoading}
+                        onPlanChange={handlePlanSelection}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </SidebarInset>
