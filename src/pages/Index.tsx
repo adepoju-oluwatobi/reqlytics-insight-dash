@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
@@ -22,6 +23,7 @@ import { BASE_URL } from "@/base_url";
 
 const Index = () => {
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [isInitializing, setIsInitializing] = useState<boolean>(true);
   const navigate = useNavigate();
   const { toast } = useToast();
   const dispatch = useAppDispatch();
@@ -29,24 +31,13 @@ const Index = () => {
   const { currentPlan } = useAppSelector((state) => state.subscription);
   const { data: statsData, isLoading, error } = useStatsData(apiKey);
 
-  const fetchPlan = async () => {
-    const storedToken = localStorage.getItem('reqlytics_token');
-    if (!storedToken) {
-      toast({
-        title: "Error",
-        description: "No authentication token found. Please log in again.",
-        variant: "destructive",
-      });
-      navigate('/login');
-      return 'free';
-    }
-
+  const fetchPlan = async (token: string) => {
     try {
       const response = await fetch(`${BASE_URL}/api/v1/subscribe/plan`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${storedToken}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -63,7 +54,10 @@ const Index = () => {
       }
 
       console.log('Fetched plan:', planData);
-      return planData.data.plan || 'free';
+      const plan = planData.data.plan || 'free';
+      localStorage.setItem('reqlytics_user_plan', plan);
+      dispatch(setCurrentPlan(plan));
+      return plan;
     } catch (error) {
       console.error('Error fetching plan:', error);
       toast({
@@ -71,24 +65,17 @@ const Index = () => {
         description: error instanceof Error ? error.message : "Failed to fetch subscription plan",
         variant: "destructive",
       });
+      // Set to free plan as fallback
+      dispatch(setCurrentPlan('free'));
       return 'free';
     }
   };
 
   useEffect(() => {
-    const initializePlan = async () => {
-      if (!currentPlan) {
-        const plan = await fetchPlan();
-        dispatch(setCurrentPlan(plan));
-      }
-    };
-    initializePlan();
-  }, [currentPlan, dispatch, navigate, toast]);
-
-  useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuthAndInitialize = async () => {
       const storedToken = localStorage.getItem('reqlytics_token');
       const storedApiKey = localStorage.getItem('reqlytics_api_key');
+      const storedPlan = localStorage.getItem('reqlytics_user_plan');
 
       if (!storedToken || !storedApiKey) {
         navigate('/login');
@@ -100,10 +87,19 @@ const Index = () => {
         apiKey: storedApiKey,
         token: storedToken,
       }));
+
+      // Set stored plan first as initial value
+      if (storedPlan) {
+        dispatch(setCurrentPlan(storedPlan));
+      }
+
+      // Then fetch the latest plan from the server
+      await fetchPlan(storedToken);
+      setIsInitializing(false);
     };
 
-    checkAuth();
-  }, [navigate, dispatch]);
+    checkAuthAndInitialize();
+  }, [navigate, dispatch, toast]);
 
   const handleRefresh = () => {
     window.location.reload();
@@ -125,21 +121,28 @@ const Index = () => {
     });
   };
 
-  if (!isAuthenticated) {
+  // Show loading state while initializing or not authenticated
+  if (!isAuthenticated || isInitializing) {
     return <LoadingState message="Checking authentication..." />;
   }
 
+  // Show loading state while fetching stats
   if (isLoading) {
     return <LoadingState message="Loading dashboard data..." />;
   }
 
+  // Show error state if there's an error
   if (error) {
     console.error('Stats data error:', error);
     return <ErrorState onRefresh={handleRefresh} onLogout={handleLogout} />;
   }
 
+  // Check if we have data before proceeding
   const data = statsData?.data as StatsData['data'];
-  if (!data) return null;
+  if (!data) {
+    console.log('No stats data available, showing loading state');
+    return <LoadingState message="Preparing dashboard..." />;
+  }
 
   const totalRequests = parseInt(data.summary.total_requests);
   const successfulRequests = totalRequests - parseInt(data.summary.server_errors) - parseInt(data.summary.client_errors);
