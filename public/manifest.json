@@ -10,13 +10,13 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/lovable-uploads/5d84e1de-6b24-4fbb-b394-629addedecdb.png",
+      "src": "/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/lovable-uploads/5d84e1de-6b24-4fbb-b394-629addedecdb.png",
+      "src": "/logo.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
@@ -25,7 +25,7 @@
   "categories": ["productivity", "business", "developer"],
   "screenshots": [
     {
-      "src": "/lovable-uploads/5d84e1de-6b24-4fbb-b394-629addedecdb.png",
+      "src": "/logo.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"

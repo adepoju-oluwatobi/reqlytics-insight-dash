@@ -117,9 +117,9 @@ const Index = () => {
         <SidebarInset>
           <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
             <SidebarTrigger className="-ml-1" />
-            <div className="flex-1 flex items-center justify-center gap-3">
+            <div className="flex-1 flex items-center gap-3">
               <img 
-                src="/lovable-uploads/5d84e1de-6b24-4fbb-b394-629addedecdb.png" 
+                src="/logo.png" 
                 alt="Reqlytics Logo" 
                 className="w-8 h-8"
               />

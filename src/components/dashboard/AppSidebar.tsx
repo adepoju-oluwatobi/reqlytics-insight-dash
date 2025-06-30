@@ -25,7 +25,11 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
     <Sidebar>
       <SidebarHeader className="border-b">
         <div className="flex items-center gap-2 px-2 py-2">
-          <BarChart3 className="h-6 w-6 text-blue-600" />
+          <img 
+                src="/logo.png" 
+                alt="Reqlytics Logo" 
+                className="w-8 h-8 rounded-md"
+              />
           <h2 className="font-bold text-lg">Reqlytics</h2>
         </div>
       </SidebarHeader>

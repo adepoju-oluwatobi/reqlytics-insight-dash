@@ -53,7 +53,7 @@ const PaystackCheckout: React.FC<PaystackCheckoutProps> = ({ plan, email, handle
   const paystackProps = {
     email,
     amount,
-    currency: "USD",
+    currency: "NGN",
     publicKey,
     text: `Pay with Paystack - Upgrade to ${plan}`,
     onSuccess: (response: any) => {
