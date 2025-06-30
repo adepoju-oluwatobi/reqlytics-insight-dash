@@ -8,7 +8,7 @@ export const subscriptionPlans = [
     period: '/month',
     icon: Sparkles,
     color: 'text-gray-500',
-    features: ['Basic API access', 'Limited support', '1000 API requests/month'],
+    features: ['Basic API access', 'Limited support', '1000 API requests/day'],
   },
   {
     id: 'premium',
