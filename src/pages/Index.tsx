@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useStatsData } from "@/hooks/useStatsData";
@@ -195,6 +194,7 @@ const Index = () => {
                 totalRequests={data.summary.total_requests}
                 avgResponseTime={data.summary.avg_response_time}
                 serverErrors={data.summary.server_errors}
+                clientErrors={data.summary.client_errors}
                 successfulRequests={successfulRequests}
                 errorRate={errorRate}
                 successRate={((successfulRequests / totalRequests) * 100).toFixed(1)}
