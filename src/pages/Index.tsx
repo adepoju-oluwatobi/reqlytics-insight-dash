@@ -64,7 +64,7 @@ const Index = () => {
         description: error instanceof Error ? error.message : "Failed to fetch subscription plan",
         variant: "destructive",
       });
-      // Set to free plan as fallback
+      // Set to free plan as fallbac
       dispatch(setCurrentPlan('free'));
       return 'free';
     }
