@@ -1,11 +1,13 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Globe, Clock, AlertTriangle, CheckCircle, TrendingUp } from "lucide-react";
+import { Globe, Clock, AlertTriangle, CheckCircle, TrendingUp, XCircle } from "lucide-react";
 
 interface SummaryCardsProps {
   totalRequests: string;
   avgResponseTime: string;
   serverErrors: string;
+  clientErrors: string;
   successfulRequests: number;
   errorRate: string;
   successRate: string;
@@ -15,11 +17,12 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalRequests,
   avgResponseTime,
   serverErrors,
+  clientErrors,
   successfulRequests,
   errorRate,
   successRate,
 }) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium text-muted-foreground">Total Requests</CardTitle>
@@ -45,12 +48,22 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Server Errors</CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground">Server Errors (5xx)</CardTitle>
         <AlertTriangle className="h-4 w-4 text-red-500" />
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-red-600">{serverErrors}</div>
-        <Badge variant="destructive" className="mt-1">{errorRate}% Error Rate</Badge>
+        <Badge variant="destructive" className="mt-1">Server Issues</Badge>
+      </CardContent>
+    </Card>
+    <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium text-muted-foreground">Client Errors (4xx)</CardTitle>
+        <XCircle className="h-4 w-4 text-orange-500" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold text-orange-600">{clientErrors}</div>
+        <Badge variant="outline" className="mt-1 border-orange-200 text-orange-700">Client Issues</Badge>
       </CardContent>
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
