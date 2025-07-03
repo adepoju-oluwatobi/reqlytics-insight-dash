@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { AlertTriangle } from "lucide-react";
@@ -24,7 +25,7 @@ const RequestStatusChart: React.FC<RequestStatusChartProps> = ({ data }) => (
             cx="50%"
             cy="50%"
             labelLine={false}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(1)}%`}
             outerRadius={80}
             fill="#8884d8"
             dataKey="value"
@@ -33,7 +34,7 @@ const RequestStatusChart: React.FC<RequestStatusChartProps> = ({ data }) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip />
+          <Tooltip formatter={(value) => [value, 'Requests']} />
         </PieChart>
       </ResponsiveContainer>
     </CardContent>
