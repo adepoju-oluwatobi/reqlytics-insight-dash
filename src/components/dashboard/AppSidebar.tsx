@@ -40,8 +40,8 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive>
-                  <Link className="flex items-center gap-2" to='/'>
+                <SidebarMenuButton asChild isActive>
+                  <Link to="/" className="flex items-center gap-2">
                     <Home className="h-4 w-4" />
                     <span>Dashboard</span>
                   </Link>
@@ -57,7 +57,7 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/subscription">
+                  <Link to="/subscription" className="flex items-center gap-2">
                     <Crown className="h-4 w-4" />
                     <span>Upgrade Plan</span>
                   </Link>
@@ -73,7 +73,7 @@ export function AppSidebar({ onShowApiKey, onRefresh, onLogout }: AppSidebarProp
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/guide">
+                  <Link to="/guide" className="flex items-center gap-2">
                     <BookOpen className="h-4 w-4" />
                     <span>Documentation</span>
                   </Link>
