@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell } from "recharts";
 import { AlertTriangle } from "lucide-react";
 import { RequestStatusData } from "@/types";
 
@@ -18,23 +18,17 @@ const RequestStatusChart: React.FC<RequestStatusChartProps> = ({ data }) => (
     </CardHeader>
     <CardContent>
       <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={data}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
+        <BarChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" label={{ position: 'top', formatter: (value: number) => `${value}%` }}>
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
-          </Pie>
-          <Tooltip />
-        </PieChart>
+          </Bar>
+        </BarChart>
       </ResponsiveContainer>
     </CardContent>
   </Card>
