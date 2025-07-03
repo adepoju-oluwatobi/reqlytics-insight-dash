@@ -38,7 +38,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Avg Response Time</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground">Avg Response Time</CardTitle>
         <Clock className="h-4 w-4 text-cyan-500" />
       </CardHeader>
       <CardContent>
@@ -48,7 +48,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Server Errors (5xx)</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground">Server Errors</CardTitle>
         <AlertTriangle className="h-4 w-4 text-red-500" />
       </CardHeader>
       <CardContent>
@@ -58,7 +58,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Client Errors (4xx)</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground">Client Errors</CardTitle>
         <XCircle className="h-4 w-4 text-orange-500" />
       </CardHeader>
       <CardContent>
@@ -68,7 +68,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
     </Card>
     <Card className="border-0 shadow-lg bg-white/70 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">Successful Requests</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground">Successful Requests</CardTitle>
         <CheckCircle className="h-4 w-4 text-green-500" />
       </CardHeader>
       <CardContent>
