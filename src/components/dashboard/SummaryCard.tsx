@@ -6,6 +6,7 @@ interface SummaryCardsProps {
   totalRequests: string;
   avgResponseTime: string;
   serverErrors: string;
+  clientErrors: string;
   successfulRequests: number;
   errorRate: string;
   successRate: string;
@@ -15,6 +16,7 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
   totalRequests,
   avgResponseTime,
   serverErrors,
+  clientErrors,
   successfulRequests,
   errorRate,
   successRate,
@@ -50,6 +52,9 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold text-red-600">{serverErrors}</div>
+        <div>
+          <p>Client error: {clientErrors}</p>
+        </div>
         <Badge variant="destructive" className="mt-1">{errorRate}% Error Rate</Badge>
       </CardContent>
     </Card>
